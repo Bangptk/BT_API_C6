@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 1000px; margin: auto; }
+        .btn-load { padding: 10px 20px; background: #00bcd4; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 20px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
+        .card h3 { margin: 10px 0 5px; font-size: 18px; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Danh sách sản phẩm</h1>
+        <button class="btn-load" onclick="loadData()">Tải dữ liệu ngay</button>
+        
+        <div id="product-list" class="product-grid">
+            </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            const display = document.getElementById('product-list');
+            try {
+                // Gọi tới Port 3000 của Server
+                const response = await fetch('http://localhost:3000/api/v1/categories');
+                
+                if (!response.ok) throw new Error("Không thể kết nối Server");
+                
+                const data = await response.json();
+                
+                // Hiển thị dữ liệu lên giao diện
+                display.innerHTML = data.map(item => `
+                    <div class="card">
+                        <img src="${item.image}" alt="${item.name}">
+                        <h3>${item.name}</h3>
+                        <p>ID: ${item.id}</p>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                alert("Lỗi: Bạn đã chạy 'node server.js' ở Terminal chưa?");
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
